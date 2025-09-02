@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Resep</title>
+  <title>Detail Resep - Resep Nusantara</title>
   <link rel="stylesheet" href="recipe.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <nav class="navbar">
@@ -15,33 +16,456 @@
     </ul>
   </nav>
 
-  <section class="content">
-    <h2>Resep Nasi Goreng</h2>
-    <img src="https://source.unsplash.com/600x400/?fried-rice" alt="Nasi Goreng">
-    
-    <h3>Bahan-bahan:</h3>
-    <ul>
-      <li>2 piring nasi putih</li>
-      <li>2 butir telur</li>
-      <li>3 siung bawang putih</li>
-      <li>2 sdm kecap manis</li>
-      <li>Garam & merica secukupnya</li>
-    </ul>
+  <section class="content" id="recipeContent">
+    </section>
 
-    <h3>Cara Memasak:</h3>
-    <ol>
-      <li>Tumis bawang putih hingga harum.</li>
-      <li>Masukkan telur, orak-arik.</li>
-      <li>Masukkan nasi, kecap, garam, dan merica.</li>
-      <li>Aduk rata hingga bumbu meresap.</li>
-      <li>Sajikan dengan acar & kerupuk.</li>
-    </ol>
-
-    <a href="index.html" class="btn">⬅ Kembali</a>
-  </section>
+  <div class="modal" id="ratingModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        </div>
+    </div>
+  </div>
 
   <footer>
     <p>&copy; 2025 Resep Nusantara</p>
   </footer>
+
+  <script>
+    // Data resep (sama dengan index.html)
+    const recipes = [
+      {
+        id: 1,
+        name: "Nasi Goreng",
+        description: "Nasi goreng khas Indonesia dengan bumbu rempah yang menggugah selera.",
+        image: "https://i.pinimg.com/1200x/8b/47/13/8b4713a891a53524079f7a4180440dba.jpg",
+        ingredients: ["2 piring nasi putih", "2 butir telur", "3 siung bawang putih", "2 sdm kecap manis", "Garam & merica secukupnya", "2 cabai merah", "Daun bawang", "Minyak untuk menumis"],
+        instructions: [
+          "Tumis bawang putih dan cabai hingga harum.",
+          "Masukkan telur, orak-arik hingga matang.",
+          "Masukkan nasi putih, aduk rata dengan telur.",
+          "Tambahkan kecap manis, garam, dan merica.",
+          "Aduk rata hingga bumbu meresap ke seluruh nasi.",
+          "Taburi daun bawang dan sajikan dengan acar & kerupuk."
+        ],
+        category: "nasi",
+        rating: 4.5,
+        reviewCount: 23,
+        cookTime: "30 menit",
+        difficulty: "Mudah",
+        servings: "2-3 porsi",
+        reviews: [
+          { author: "Sari", rating: 5, text: "Resep yang sangat enak! Keluarga saya suka sekali.", date: "2024-08-15" },
+          { author: "Budi", rating: 4, text: "Mudah diikuti dan hasilnya memuaskan.", date: "2024-08-10" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Sate Ayam",
+        description: "Sate ayam dengan bumbu kacang khas Jawa yang lezat dan autentik.",
+        image: "https://i.pinimg.com/736x/a6/8e/c5/a68ec592ddcfad79a8480821a5ab6320.jpg",
+        ingredients: ["500g daging ayam potong dadu", "100g kacang tanah sangrai", "3 cabai merah", "5 bawang merah", "3 siung bawang putih", "2 sdm kecap manis", "1 sdt garam", "Tusuk sate"],
+        instructions: [
+          "Tusuk daging ayam dengan tusuk sate, 4-5 potong per tusuk.",
+          "Bakar sate di atas bara api sambil dibolak-balik hingga matang.",
+          "Untuk bumbu kacang: haluskan kacang, cabai, bawang merah, dan bawang putih.",
+          "Tumis bumbu halus hingga harum, tambahkan air secukupnya.",
+          "Masukkan kecap manis dan garam, masak hingga kental.",
+          "Sajikan sate dengan bumbu kacang, lontong, dan lalapan."
+        ],
+        category: "ayam",
+        rating: 4.7,
+        reviewCount: 34,
+        cookTime: "45 menit",
+        difficulty: "Sedang",
+        servings: "4-5 porsi",
+        reviews: [
+          { author: "Dina", rating: 5, text: "Bumbu kacangnya lezat sekali!", date: "2024-08-20" },
+          { author: "Reza", rating: 4, text: "Sate terenak yang pernah saya buat.", date: "2024-08-18" }
+        ]
+      },
+      {
+        id: 3,
+        name: "Rendang",
+        description: "Masakan Padang dengan daging sapi empuk dan bumbu rempah yang kaya.",
+        image: "https://i.pinimg.com/736x/cb/dd/ae/cbddaef6e159d91e9183ee467253e2e2.jpg",
+        ingredients: ["1kg daging sapi potong kotak", "400ml santan kental", "10 cabai merah", "8 bawang merah", "6 siung bawang putih", "3 batang sereh", "4 lembar daun jeruk", "2 sdt garam", "Lengkuas, jahe, kunyit"],
+        instructions: [
+          "Haluskan cabai, bawang merah, bawang putih, lengkuas, jahe, dan kunyit.",
+          "Tumis bumbu halus hingga harum dan matang.",
+          "Masukkan daging sapi, aduk hingga berubah warna.",
+          "Tuang santan, tambahkan sereh dan daun jeruk.",
+          "Masak dengan api kecil sambil diaduk sesekali selama 2-3 jam.",
+          "Masak hingga santan menyusut dan daging empuk berwarna coklat kehitaman."
+        ],
+        category: "daging",
+        rating: 4.9,
+        reviewCount: 56,
+        cookTime: "3 jam",
+        difficulty: "Sulit",
+        servings: "6-8 porsi",
+        reviews: [
+          { author: "Maya", rating: 5, text: "Rendang terbaik! Dagingnya empuk dan bumbu meresap sempurna.", date: "2024-08-25" },
+          { author: "Agus", rating: 5, text: "Memang membutuhkan waktu lama tapi hasilnya luar biasa.", date: "2024-08-22" }
+        ]
+      },
+      {
+        id: 4,
+        name: "Gudeg",
+        description: "Masakan khas Yogyakarta yang terbuat dari nangka muda yang dimasak dengan santan dan gula merah.",
+        image: "https://i.pinimg.com/736x/62/63/0d/62630d9ca34aa752a8e2c811bfa79613.jpg",
+        ingredients: ["1 kg nangka muda", "800 ml santan kental", "500 ml santan encer", "5 lembar daun salam", "2 batang sereh", "200 gram gula merah", "Garam secukupnya", "Bumbu halus: bawang merah, bawang putih, ketumbar, kemiri, lengkuas"],
+        instructions: [
+          "Rebus nangka muda hingga empuk, tiriskan.",
+          "Tumis bumbu halus, daun salam, dan sereh hingga harum.",
+          "Masukkan nangka muda, santan encer, dan gula merah.",
+          "Masak hingga mendidih dan bumbu meresap.",
+          "Tuang santan kental, masak dengan api sangat kecil selama 4-5 jam hingga kering dan berwarna coklat kemerahan.",
+          "Sajikan dengan nasi, telur pindang, dan krecek."
+        ],
+        category: "sayuran",
+        rating: 4.6,
+        reviewCount: 15,
+        cookTime: "5 jam",
+        difficulty: "Sulit",
+        servings: "4-6 porsi",
+        reviews: [
+          { author: "Rini", rating: 5, text: "Rasanya autentik, seperti buatan ibu di Jogja.", date: "2024-08-28" },
+          { author: "Joko", rating: 4, text: "Prosesnya lama tapi hasilnya sepadan.", date: "2024-08-26" }
+        ]
+      },
+      {
+        id: 5,
+        name: "Gado-gado",
+        description: "Salad khas Indonesia dengan berbagai macam sayuran rebus yang disiram bumbu kacang.",
+        image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400",
+        ingredients: ["200 gram kentang", "100 gram kol", "100 gram tauge", "100 gram kacang panjang", "2 butir telur rebus", "Tahu dan tempe goreng", "Kerupuk udang", "Bumbu kacang: kacang tanah, gula merah, bawang putih, cabai, asam jawa"],
+        instructions: [
+          "Rebus semua sayuran hingga matang, tiriskan.",
+          "Untuk bumbu kacang: haluskan kacang tanah, gula merah, bawang putih, dan cabai.",
+          "Larutkan bumbu dengan air panas hingga kekentalan yang diinginkan, tambahkan air asam jawa dan garam.",
+          "Tata kentang, kol, tauge, dan kacang panjang di atas piring.",
+          "Tambahkan irisan telur, tahu, dan tempe.",
+          "Siram dengan bumbu kacang, taburi bawang goreng, dan sajikan dengan kerupuk."
+        ],
+        category: "sayuran",
+        rating: 4.8,
+        reviewCount: 41,
+        cookTime: "30 menit",
+        difficulty: "Mudah",
+        servings: "3-4 porsi",
+        reviews: [
+          { author: "Citra", rating: 5, text: "Bumbu kacangnya pas banget, enak!", date: "2024-08-30" },
+          { author: "Putri", rating: 5, text: "Resep ini sangat praktis dan sehat.", date: "2024-08-29" }
+        ]
+      },
+      {
+        id: 6,
+        name: "Ayam Geprek",
+        description: "Ayam goreng tepung yang diulek atau digeprek bersama sambal pedas.",
+        image: "https://i.pinimg.com/736x/77/58/8d/77588d6a21ed55ca6725bb9ef624aec2.jpg",
+        ingredients: ["4 potong paha ayam", "100 gram tepung terigu", "50 gram tepung maizena", "1 butir telur", "Garam, merica, kaldu bubuk", "Minyak goreng", "Bahan sambal: 10 cabai rawit merah, 3 siung bawang putih, garam, gula"],
+        instructions: [
+          "Marinasi ayam dengan garam, merica, dan kaldu bubuk.",
+          "Campur tepung terigu, maizena, dan bumbu.",
+          "Celupkan ayam ke telur, lalu gulingkan di campuran tepung hingga terlumuri rata.",
+          "Goreng ayam hingga matang dan berwarna kuning keemasan, angkat dan tiriskan.",
+          "Untuk sambal: ulek cabai rawit, bawang putih, garam, dan gula hingga halus.",
+          "Pindahkan sambal ke cobek, letakkan ayam di atasnya, lalu geprek hingga sambal merata. Sajikan dengan nasi hangat."
+        ],
+        category: "ayam",
+        rating: 4.6,
+        reviewCount: 30,
+        cookTime: "40 menit",
+        difficulty: "Mudah",
+        servings: "4 porsi",
+        reviews: [
+          { author: "Rio", rating: 4, text: "Pedasnya nendang, mantap!", date: "2024-08-27" },
+          { author: "Lia", rating: 5, text: "Sangat mudah dibuat dan hasilnya crispy.", date: "2024-08-25" }
+        ]
+      }
+    ];
+
+    // Get recipe ID from URL
+    function getRecipeIdFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return parseInt(urlParams.get('id')) || 1; // Default ke resep pertama jika tidak ada ID
+    }
+
+    // Generate stars
+    function generateStars(rating) {
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      let stars = '';
+
+      for (let i = 0; i < 5; i++) {
+        if (i < fullStars) {
+          stars += '<i class="fas fa-star star active"></i>';
+        } else if (i === fullStars && hasHalfStar) {
+          stars += '<i class="fas fa-star-half-alt star active"></i>';
+        } else {
+          stars += '<i class="far fa-star star"></i>';
+        }
+      }
+      return stars;
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Render recipe detail
+    function renderRecipeDetail() {
+      const recipeId = getRecipeIdFromUrl();
+      const recipe = recipes.find(r => r.id === recipeId);
+      
+      if (!recipe) {
+        document.getElementById('recipeContent').innerHTML = `
+          <h2>Resep tidak ditemukan</h2>
+          <p>Resep yang Anda cari tidak tersedia.</p>
+          <a href="index.html" class="btn">← Kembali ke Beranda</a>
+        `;
+        return;
+      }
+
+      // Update page title
+      document.title = `${recipe.name} - Resep Nusantara`;
+
+      const content = document.getElementById('recipeContent');
+      content.innerHTML = `
+        <div class="recipe-header">
+          <h2>${recipe.name}</h2>
+          <div class="recipe-rating">
+            <div class="stars">${generateStars(recipe.rating)}</div>
+            <span class="rating-text">${recipe.rating} dari 5 (${recipe.reviewCount} ulasan)</span>
+            <button class="btn-rating-detail" onclick="showRatingModal(${recipe.id})">
+              <i class="fas fa-star"></i> Lihat & Beri Rating
+            </button>
+          </div>
+        </div>
+
+        <img src="${recipe.image}" alt="${recipe.name}" class="recipe-image">
+        
+        <div class="recipe-meta-info">
+          <div class="meta-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Waktu Masak</strong>
+              <span>${recipe.cookTime}</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-signal"></i>
+            <div>
+              <strong>Tingkat Kesulitan</strong>
+              <span>${recipe.difficulty}</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-users"></i>
+            <div>
+              <strong>Porsi</strong>
+              <span>${recipe.servings}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-description">
+          <p>${recipe.description}</p>
+        </div>
+
+        <div class="recipe-section">
+          <h3><i class="fas fa-shopping-basket"></i> Bahan-bahan:</h3>
+          <ul class="ingredients-list">
+            ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="recipe-section">
+          <h3><i class="fas fa-list-ol"></i> Cara Memasak:</h3>
+          <ol class="instructions-list">
+            ${recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+          </ol>
+        </div>
+
+        <div class="recipe-tips">
+          <h3><i class="fas fa-lightbulb"></i> Tips Memasak:</h3>
+          <div class="tips-content">
+            <p><strong>💡 Tips dari Chef:</strong></p>
+            <ul>
+              <li>Pastikan semua bahan sudah disiapkan sebelum mulai memasak</li>
+              <li>Gunakan api sedang untuk hasil yang optimal</li>
+              <li>Cicipi dan sesuaikan bumbu sesuai selera</li>
+              <li>Sajikan segera selagi hangat untuk cita rasa terbaik</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="recipe-actions">
+          <a href="index.html" class="btn btn-back">
+            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+          </a>
+          <button class="btn btn-rating" onclick="showRatingModal(${recipe.id})">
+            <i class="fas fa-star"></i> Rating & Ulasan
+          </button>
+          <button class="btn btn-share" onclick="shareRecipe('${recipe.name}')">
+            <i class="fas fa-share-alt"></i> Bagikan Resep
+          </button>
+        </div>
+      `;
+    }
+
+    // Show rating modal
+    function showRatingModal(recipeId) {
+      const recipe = recipes.find(r => r.id === recipeId);
+      const modal = document.getElementById('ratingModal');
+      const content = document.getElementById('modalContent');
+      
+      content.innerHTML = `
+        <h2>Rating & Ulasan - ${recipe.name}</h2>
+        <div class="modal-rating">
+          <div class="stars">${generateStars(recipe.rating)}</div>
+          <span>${recipe.rating} dari 5 (${recipe.reviewCount} ulasan)</span>
+        </div>
+        
+        <div class="reviews-section">
+          <h3>Ulasan Pengguna</h3>
+          <div class="reviews-list">
+            ${recipe.reviews.length > 0 ? 
+              recipe.reviews.map(review => `
+                <div class="review-item">
+                  <div class="review-header">
+                    <div>
+                      <strong class="review-author">${review.author}</strong>
+                      <div class="stars small">${generateStars(review.rating)}</div>
+                    </div>
+                    <span class="review-date">${formatDate(review.date)}</span>
+                  </div>
+                  <p class="review-text">${review.text}</p>
+                </div>
+              `).join('') :
+              '<p class="no-reviews">Belum ada ulasan. Jadilah yang pertama!</p>'
+            }
+          </div>
+        </div>
+        
+        <form class="review-form" onsubmit="submitReview(event, ${recipeId})">
+          <h3>Tambahkan Ulasan Anda</h3>
+          <div class="form-group">
+            <label>Rating Anda:</label>
+            <div class="rating-input" id="ratingInput">
+              ${[1,2,3,4,5].map(num => 
+                `<i class="far fa-star star-input" onclick="setRating(${num})" data-rating="${num}"></i>`
+              ).join('')}
+            </div>
+            <input type="hidden" id="selectedRating" value="0">
+          </div>
+          <div class="form-group">
+            <label>Nama Anda:</label>
+            <input type="text" id="reviewerName" required placeholder="Masukkan nama Anda">
+          </div>
+          <div class="form-group">
+            <label>Ulasan Anda:</label>
+            <textarea id="reviewText" placeholder="Ceritakan pengalaman Anda dengan resep ini..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Kirim Ulasan
+          </button>
+        </form>
+      `;
+      
+      modal.classList.add('active');
+    }
+
+    // Set rating
+    function setRating(rating) {
+      document.getElementById('selectedRating').value = rating;
+      const stars = document.querySelectorAll('.star-input');
+      
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.classList.remove('far');
+          star.classList.add('fas', 'active');
+        } else {
+          star.classList.remove('fas', 'active');
+          star.classList.add('far');
+        }
+      });
+    }
+
+    // Submit review
+    function submitReview(event, recipeId) {
+      event.preventDefault();
+      
+      const rating = parseInt(document.getElementById('selectedRating').value);
+      const name = document.getElementById('reviewerName').value;
+      const text = document.getElementById('reviewText').value;
+      
+      if (rating === 0) {
+        alert('Mohon berikan rating untuk resep ini!');
+        return;
+      }
+      
+      const recipe = recipes.find(r => r.id === recipeId);
+      const newReview = {
+        author: name,
+        rating: rating,
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      };
+      
+      recipe.reviews.unshift(newReview);
+      recipe.reviewCount++;
+      
+      // Recalculate average rating
+      const totalRating = recipe.reviews.reduce((sum, review) => sum + review.rating, 0);
+      recipe.rating = Math.round((totalRating / recipe.reviews.length) * 10) / 10;
+      
+      // Update display
+      renderRecipeDetail();
+      showRatingModal(recipeId);
+      alert('Terima kasih! Ulasan Anda telah ditambahkan.');
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('ratingModal').classList.remove('active');
+    }
+
+    // Share recipe
+    function shareRecipe(recipeName) {
+      if (navigator.share) {
+        navigator.share({
+          title: recipeName + ' - Resep Nusantara',
+          text: 'Lihat resep ' + recipeName + ' yang lezat ini!',
+          url: window.location.href
+        });
+      } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('Link resep telah disalin ke clipboard!');
+        });
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('ratingModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      renderRecipeDetail();
+    });
+  </script>
 </body>
 </html>

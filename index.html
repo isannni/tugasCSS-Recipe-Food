@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resep Masakan Nusantara</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -23,30 +24,420 @@
     <p>Masakan khas Indonesia dengan cita rasa lezat</p>
   </header>
 
+<!-- Search Container -->
+<div class="search-container">
+  <div class="search-card">
+    <div class="search-tabs">
+      <button class="search-tab active" onclick="switchSearchMode('name')">
+        <i class="fas fa-search"></i> Cari Nama Resep
+      </button>
+      <button class="search-tab" onclick="switchSearchMode('ingredient')">
+        <i class="fas fa-carrot"></i> Cari Bahan
+      </button>
+    </div>
+    
+    <div class="search-input-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Ketik nama resep yang ingin dicari..." oninput="searchRecipes()">
+    </div>
+  </div>
+</div>
+
   <!-- Grid Resep -->
-  <section class="grid-container">
-    <div class="card">
-      <img src="https://i.pinimg.com/1200x/8b/47/13/8b4713a891a53524079f7a4180440dba.jpg" alt="Nasi Goreng">
-      <h3>Nasi Goreng</h3>
-      <p>Nasi goreng khas Indonesia dengan bumbu rempah.</p>
-      <a href="recipe.html" class="btn">Lihat Resep</a>
-    </div>
-    <div class="card">
-      <img src="https://i.pinimg.com/736x/a6/8e/c5/a68ec592ddcfad79a8480821a5ab6320.jpg" alt="Sate Ayam">
-      <h3>Sate Ayam</h3>
-      <p>Sate ayam dengan bumbu kacang khas Jawa.</p>
-      <a href="recipe.html" class="btn">Lihat Resep</a>
-    </div>
-    <div class="card">
-      <img src="https://i.pinimg.com/736x/cb/dd/ae/cbddaef6e159d91e9183ee467253e2e2.jpg" alt="Rendang">
-      <h3>Rendang</h3>
-      <p>Masakan Padang dengan daging sapi empuk.</p>
-      <a href="recipe.html" class="btn">Lihat Resep</a>
-    </div>
+  <section class="grid-container" id="recipesGrid">
+    <!-- Resep akan di-render oleh JavaScript -->
   </section>
+
+  <!-- No Results -->
+  <div class="no-results" id="noResults" style="display: none;">
+    <i class="fas fa-search"></i>
+    <h3>Tidak ada resep yang ditemukan</h3>
+    <p>Coba gunakan kata kunci lain atau pilih kategori berbeda</p>
+  </div>
+
+  <!-- Rating Modal -->
+  <div class="modal" id="ratingModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        <!-- Content akan diisi JavaScript -->
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p>&copy; 2025 Resep Nusantara</p>
   </footer>
+
+  <script>
+    // Data resep yang diperluas
+    const recipes = [
+      {
+        id: 1,
+        name: "Nasi Goreng",
+        description: "Nasi goreng khas Indonesia dengan bumbu rempah.",
+        image: "https://i.pinimg.com/1200x/8b/47/13/8b4713a891a53524079f7a4180440dba.jpg",
+        ingredients: ["nasi", "telur", "bawang", "kecap", "cabai"],
+        category: "nasi",
+        rating: 4.5,
+        reviewCount: 23,
+        cookTime: "30 menit",
+        difficulty: "Mudah",
+        reviews: [
+          { author: "Sari", rating: 5, text: "Resep yang sangat enak! Keluarga saya suka sekali.", date: "2024-08-15" },
+          { author: "Budi", rating: 4, text: "Mudah diikuti dan hasilnya memuaskan.", date: "2024-08-10" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Sate Ayam",
+        description: "Sate ayam dengan bumbu kacang khas Jawa.",
+        image: "https://i.pinimg.com/736x/a6/8e/c5/a68ec592ddcfad79a8480821a5ab6320.jpg",
+        ingredients: ["ayam", "kacang", "kecap", "cabai", "bawang"],
+        category: "ayam",
+        rating: 4.7,
+        reviewCount: 34,
+        cookTime: "45 menit",
+        difficulty: "Sedang",
+        reviews: [
+          { author: "Dina", rating: 5, text: "Bumbu kacangnya lezat sekali!", date: "2024-08-20" },
+          { author: "Reza", rating: 4, text: "Sate terenak yang pernah saya buat.", date: "2024-08-18" }
+        ]
+      },
+      {
+        id: 3,
+        name: "Rendang",
+        description: "Masakan Padang dengan daging sapi empuk.",
+        image: "https://i.pinimg.com/736x/cb/dd/ae/cbddaef6e159d91e9183ee467253e2e2.jpg",
+        ingredients: ["daging", "santan", "cabai", "rempah", "daun"],
+        category: "daging",
+        rating: 4.9,
+        reviewCount: 56,
+        cookTime: "3 jam",
+        difficulty: "Sulit",
+        reviews: [
+          { author: "Maya", rating: 5, text: "Rendang terbaik! Dagingnya empuk dan bumbu meresap sempurna.", date: "2024-08-25" },
+          { author: "Agus", rating: 5, text: "Memang membutuhkan waktu lama tapi hasilnya luar biasa.", date: "2024-08-22" }
+        ]
+      },
+      {
+        id: 4,
+        name: "Gudeg",
+        description: "Masakan khas Yogyakarta dengan nangka muda.",
+        image: "https://i.pinimg.com/736x/62/63/0d/62630d9ca34aa752a8e2c811bfa79613.jpg",
+        ingredients: ["nangka", "santan", "gula", "rempah", "telur"],
+        category: "sayur",
+        rating: 4.3,
+        reviewCount: 18,
+        cookTime: "2 jam",
+        difficulty: "Sedang",
+        reviews: []
+      },
+      {
+        id: 5,
+        name: "Gado-Gado",
+        description: "Salad Indonesia dengan bumbu kacang segar.",
+        image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400",
+        ingredients: ["sayuran", "kacang", "tahu", "tempe", "lontong"],
+        category: "sayur",
+        rating: 4.2,
+        reviewCount: 12,
+        cookTime: "25 menit",
+        difficulty: "Mudah",
+        reviews: []
+      },
+      {
+        id: 6,
+        name: "Ayam Geprek",
+        description: "Ayam crispy dengan sambal yang pedas mantap.",
+        image: "https://i.pinimg.com/736x/77/58/8d/77588d6a21ed55ca6725bb9ef624aec2.jpg",
+        ingredients: ["ayam", "cabai", "bawang", "tepung", "minyak"],
+        category: "pedas",
+        rating: 4.6,
+        reviewCount: 41,
+        cookTime: "40 menit",
+        difficulty: "Sedang",
+        reviews: []
+      }
+    ];
+
+    let currentSearchMode = 'name';
+    let currentCategory = 'all';
+    let filteredRecipes = [...recipes];
+
+    // Generate stars untuk rating
+    function generateStars(rating) {
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      let stars = '';
+
+      for (let i = 0; i < 5; i++) {
+        if (i < fullStars) {
+          stars += '<i class="fas fa-star star active"></i>';
+        } else if (i === fullStars && hasHalfStar) {
+          stars += '<i class="fas fa-star-half-alt star active"></i>';
+        } else {
+          stars += '<i class="far fa-star star"></i>';
+        }
+      }
+      return stars;
+    }
+
+    // Render resep ke grid
+    function renderRecipes(recipesToRender = filteredRecipes) {
+      const grid = document.getElementById('recipesGrid');
+      const noResults = document.getElementById('noResults');
+
+      if (recipesToRender.length === 0) {
+        grid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+      }
+
+      grid.style.display = 'grid';
+      noResults.style.display = 'none';
+
+      grid.innerHTML = recipesToRender.map(recipe => `
+        <div class="card" onclick="showRatingModal(${recipe.id})">
+          <img src="${recipe.image}" alt="${recipe.name}">
+          <div class="card-content">
+            <h3>${recipe.name}</h3>
+            <p>${recipe.description}</p>
+            
+            <div class="recipe-meta">
+              <span><i class="fas fa-clock"></i> ${recipe.cookTime}</span>
+              <span><i class="fas fa-signal"></i> ${recipe.difficulty}</span>
+            </div>
+            
+            <div class="rating-display">
+              <div class="stars">${generateStars(recipe.rating)}</div>
+              <span class="rating-text">${recipe.rating} (${recipe.reviewCount} ulasan)</span>
+            </div>
+            
+            <div class="recipe-tags">
+              ${recipe.ingredients.slice(0, 3).map(ingredient => 
+                `<span class="ingredient-tag">${ingredient}</span>`
+              ).join('')}
+            </div>
+            
+            <a href="recipe.html?id=${recipe.id}" class="btn">Lihat Resep</a>
+            <button class="btn-rating" onclick="event.stopPropagation(); showRatingModal(${recipe.id})">
+              <i class="fas fa-star"></i> Rating & Ulasan
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Switch search mode
+    function switchSearchMode(mode) {
+      currentSearchMode = mode;
+      
+      document.querySelectorAll('.search-tab').forEach(tab => tab.classList.remove('active'));
+      event.target.closest('.search-tab').classList.add('active');
+      
+      const input = document.getElementById('searchInput');
+      if (mode === 'name') {
+        input.placeholder = 'Ketik nama resep yang ingin dicari...';
+      } else {
+        input.placeholder = 'Ketik bahan yang tersedia (contoh: ayam, nasi, cabai)...';
+      }
+      
+      input.value = '';
+      searchRecipes();
+    }
+
+    // Search function
+    function searchRecipes() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      if (query === '') {
+        filteredRecipes = currentCategory === 'all' ? recipes : recipes.filter(recipe => recipe.category === currentCategory);
+      } else {
+        let searchResults;
+        
+        if (currentSearchMode === 'name') {
+          searchResults = recipes.filter(recipe => 
+            recipe.name.toLowerCase().includes(query) ||
+            recipe.description.toLowerCase().includes(query)
+          );
+        } else {
+          searchResults = recipes.filter(recipe => 
+            recipe.ingredients.some(ingredient => 
+              ingredient.toLowerCase().includes(query)
+            )
+          );
+        }
+        
+        filteredRecipes = currentCategory === 'all' ? searchResults : 
+          searchResults.filter(recipe => recipe.category === currentCategory);
+      }
+      
+      renderRecipes(filteredRecipes);
+    }
+
+    // Filter by category
+    function filterByCategory(category) {
+      currentCategory = category;
+      
+      document.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      searchRecipes();
+    }
+
+    // Show rating modal
+    function showRatingModal(recipeId) {
+      const recipe = recipes.find(r => r.id === recipeId);
+      const modal = document.getElementById('ratingModal');
+      const content = document.getElementById('modalContent');
+      
+      content.innerHTML = `
+        <h2>${recipe.name}</h2>
+        <div class="modal-rating">
+          <div class="stars">${generateStars(recipe.rating)}</div>
+          <span>${recipe.rating} dari 5 (${recipe.reviewCount} ulasan)</span>
+        </div>
+        
+        <p class="recipe-desc">${recipe.description}</p>
+        
+        <div class="recipe-info">
+          <span><i class="fas fa-clock"></i> ${recipe.cookTime}</span>
+          <span><i class="fas fa-signal"></i> ${recipe.difficulty}</span>
+        </div>
+        
+        <div class="modal-ingredients">
+          <strong>Bahan utama:</strong>
+          ${recipe.ingredients.map(ingredient => 
+            `<span class="ingredient-tag">${ingredient}</span>`
+          ).join('')}
+        </div>
+        
+        <div class="reviews-section">
+          <h3>Ulasan Pengguna</h3>
+          <div class="reviews-list">
+            ${recipe.reviews.length > 0 ? 
+              recipe.reviews.map(review => `
+                <div class="review-item">
+                  <div class="review-header">
+                    <div>
+                      <strong class="review-author">${review.author}</strong>
+                      <div class="stars small">${generateStars(review.rating)}</div>
+                    </div>
+                    <span class="review-date">${formatDate(review.date)}</span>
+                  </div>
+                  <p class="review-text">${review.text}</p>
+                </div>
+              `).join('') :
+              '<p class="no-reviews">Belum ada ulasan. Jadilah yang pertama!</p>'
+            }
+          </div>
+        </div>
+        
+        <form class="review-form" onsubmit="submitReview(event, ${recipeId})">
+          <h3>Tambahkan Ulasan</h3>
+          <div class="form-group">
+            <label>Rating:</label>
+            <div class="rating-input" id="ratingInput">
+              ${[1,2,3,4,5].map(num => 
+                `<i class="far fa-star star-input" onclick="setRating(${num})" data-rating="${num}"></i>`
+              ).join('')}
+            </div>
+            <input type="hidden" id="selectedRating" value="0">
+          </div>
+          <div class="form-group">
+            <label>Nama:</label>
+            <input type="text" id="reviewerName" required>
+          </div>
+          <div class="form-group">
+            <label>Ulasan:</label>
+            <textarea id="reviewText" placeholder="Bagikan pengalaman Anda..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Kirim Ulasan
+          </button>
+        </form>
+      `;
+      
+      modal.classList.add('active');
+    }
+
+    // Set rating
+    function setRating(rating) {
+      document.getElementById('selectedRating').value = rating;
+      const stars = document.querySelectorAll('.star-input');
+      
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.classList.remove('far');
+          star.classList.add('fas', 'active');
+        } else {
+          star.classList.remove('fas', 'active');
+          star.classList.add('far');
+        }
+      });
+    }
+
+    // Submit review
+    function submitReview(event, recipeId) {
+      event.preventDefault();
+      
+      const rating = parseInt(document.getElementById('selectedRating').value);
+      const name = document.getElementById('reviewerName').value;
+      const text = document.getElementById('reviewText').value;
+      
+      if (rating === 0) {
+        alert('Mohon berikan rating untuk resep ini!');
+        return;
+      }
+      
+      const recipe = recipes.find(r => r.id === recipeId);
+      const newReview = {
+        author: name,
+        rating: rating,
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      };
+      
+      recipe.reviews.unshift(newReview);
+      recipe.reviewCount++;
+      
+      // Recalculate average rating
+      const totalRating = recipe.reviews.reduce((sum, review) => sum + review.rating, 0);
+      recipe.rating = Math.round((totalRating / recipe.reviews.length) * 10) / 10;
+      
+      renderRecipes();
+      showRatingModal(recipeId);
+      alert('Terima kasih! Ulasan Anda telah ditambahkan.');
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('ratingModal').classList.remove('active');
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long', 
+        day: 'numeric'
+      });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('ratingModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      renderRecipes();
+    });
+  </script>
 </body>
 </html>
